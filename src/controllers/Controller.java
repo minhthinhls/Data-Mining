@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import models.*;
 import weka.core.*;
 import weka.core.converters.ArffSaver;
@@ -23,7 +22,7 @@ import weka.core.converters.CSVLoader;
 public class Controller {
 
     static void toArff() throws IOException {
-// Declare two numeric attributes
+        // Declare two numeric attributes
         Attribute Attribute1 = new Attribute("firstNumeric");
         Attribute Attribute2 = new Attribute("secondNumeric");
 
@@ -60,11 +59,11 @@ public class Controller {
         iExample.setValue((Attribute) fvWekaAttributes.elementAt(2), "gray");
         iExample.setValue((Attribute) fvWekaAttributes.elementAt(3), "positive");
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("D:/Work/test.arff"));
-        writer.write(isTrainingSet.toString());
-        writer.write(iExample.toString());
-        writer.flush();
-        writer.close();
+        BufferedWriter bw = new BufferedWriter(new FileWriter("D:/Work/test.arff"));
+        bw.write(isTrainingSet.toString());
+        bw.write(iExample.toString());
+        bw.flush();
+        bw.close();
     }
 
     static void CsvToArff(String fromUrl, String toUrl) throws IOException {
@@ -73,10 +72,10 @@ public class Controller {
             loader.setSource(new File(fromUrl));
             Instances data = loader.getDataSet();
 
-            ArffSaver saver = new ArffSaver();
-            saver.setInstances(data);
-            saver.setFile(new File(toUrl));
-            saver.writeBatch();
+            ArffSaver as = new ArffSaver();
+            as.setInstances(data);
+            as.setFile(new File(toUrl));
+            as.writeBatch();
         } catch (Exception e) {
             e.printStackTrace();
         }
