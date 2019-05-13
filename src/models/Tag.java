@@ -16,6 +16,10 @@ public class Tag {
     private String tag;
     private String timestamp;
 
+    public Tag() {
+        // Constructor
+    }
+
     public Tag(String userId, String movieId, String tag, String timestamp) {
         this.userId = userId;
         this.movieId = movieId;

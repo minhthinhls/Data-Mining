@@ -34,29 +34,8 @@ public class Answer {
     private String m_ser_imp;
     private String m_ser_rec;
 
-    public Answer(String[] fields) {
-        this.userId = fields[0];
-        this.movieId = fields[1];
-        this.rating = fields[2];
-        this.timestamp = fields[3];
-        this.predictedRating = fields[4];
-        this.s1 = fields[5];
-        this.s2 = fields[6];
-        this.s3 = fields[7];
-        this.s4 = fields[8];
-        this.s5 = fields[9];
-        this.s6 = fields[10];
-        this.s7 = fields[11];
-        this.s8 = fields[12];
-        this.q = fields[13];
-        this.s_ser_rel = fields[14];
-        this.s_ser_find = fields[15];
-        this.s_ser_imp = fields[16];
-        this.s_ser_rec = fields[17];
-        this.m_ser_rel = fields[18];
-        this.m_ser_find = fields[19];
-        this.m_ser_imp = fields[20];
-        this.m_ser_rec = fields[21];
+    public Answer() {
+        // Constructor
     }
 
     public Answer(String userId, String movieId, String rating, String timestamp, String predictedRating, String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8, String q, String s_ser_rel, String s_ser_find, String s_ser_imp, String s_ser_rec, String m_ser_rel, String m_ser_find, String m_ser_imp, String m_ser_rec) {
@@ -82,6 +61,31 @@ public class Answer {
         this.m_ser_find = m_ser_find;
         this.m_ser_imp = m_ser_imp;
         this.m_ser_rec = m_ser_rec;
+    }
+
+    public Answer(String[] fields) {
+        this.userId = fields[0];
+        this.movieId = fields[1];
+        this.rating = fields[2];
+        this.timestamp = fields[3];
+        this.predictedRating = fields[4];
+        this.s1 = fields[5];
+        this.s2 = fields[6];
+        this.s3 = fields[7];
+        this.s4 = fields[8];
+        this.s5 = fields[9];
+        this.s6 = fields[10];
+        this.s7 = fields[11];
+        this.s8 = fields[12];
+        this.q = fields[13];
+        this.s_ser_rel = fields[14];
+        this.s_ser_find = fields[15];
+        this.s_ser_imp = fields[16];
+        this.s_ser_rec = fields[17];
+        this.m_ser_rel = fields[18];
+        this.m_ser_find = fields[19];
+        this.m_ser_imp = fields[20];
+        this.m_ser_rec = fields[21];
     }
 
     public String getUserId() {

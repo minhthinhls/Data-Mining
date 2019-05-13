@@ -14,6 +14,10 @@ public class Recommendation {
     private String userId;
     private String movieId;
 
+    public Recommendation() {
+        // Constructor
+    }
+
     public Recommendation(String userId, String movieId) {
         this.userId = userId;
         this.movieId = movieId;

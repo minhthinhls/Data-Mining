@@ -12,39 +12,60 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
+import interfaces.FileHandler;
 
 /**
  *
  * @author Minh Thinh
  */
-public class Answers {
+public class Answers implements FileHandler {
 
     private List<Answer> answers;
 
-    public List<Answer> getAnswers() {
+    /**
+     *
+     * @return
+     */
+    @Override
+    public List<Answer> getList() {
         return answers;
     }
 
     /**
      *
+     * @param toUrl
+     * @throws IOException
+     */
+    @Override
+    public void toArff(String toUrl) throws IOException {
+
+    }
+
+    /**
+     *
      * @param url
+     * @return
      * @throws FileNotFoundException
      */
-    public void read(String url) throws FileNotFoundException {
+    @Override
+    public Answers read(String url) throws FileNotFoundException {
         // Reading the file from parameter @url.
+        BufferedReader br = new BufferedReader(new FileReader(url));
+        answers = new ArrayList<>();
         try {
-            answers = new ArrayList<>();
-            BufferedReader br = new BufferedReader(new FileReader(url));
             String line;
             String[] fields;
+            br.readLine();
             while ((line = br.readLine()) != null) {
-                fields = line.split(",");
+                fields = line.replaceAll("NA", "?").replaceAll(" ", "").split(",");
                 answers.add(new Answer(fields));
             }
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     /**

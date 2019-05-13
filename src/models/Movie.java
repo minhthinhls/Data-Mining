@@ -20,6 +20,10 @@ public class Movie {
     private String tmdbId;
     private String genres;
 
+    public Movie() {
+        // Constructor
+    }
+
     public Movie(String movieId, String title, String releaseDate, String directedBy, String starring, String imdbId, String tmdbId, String genres) {
         this.movieId = movieId;
         this.title = title;

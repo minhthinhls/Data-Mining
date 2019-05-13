@@ -12,39 +12,63 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
+import interfaces.FileHandler;
+import weka.core.Attribute;
 
 /**
  *
  * @author Minh Thinh
  */
-public class Movies {
+public class Movies implements FileHandler {
 
     private List<Movie> movies;
 
-    public List<Movie> getMovies() {
+    /**
+     *
+     * @return
+     */
+    @Override
+    public List<Movie> getList() {
         return movies;
     }
 
     /**
      *
+     * @param toUrl
+     * @throws IOException
+     */
+    @Override
+    public void toArff(String toUrl) throws IOException {
+        Attribute att = new Attribute("Id", true);
+    }
+
+    /**
+     *
      * @param url
+     * @return
      * @throws FileNotFoundException
      */
-    public void read(String url) throws FileNotFoundException {
+    @Override
+    public Movies read(String url) throws FileNotFoundException {
         // Reading the file from parameter @url.
+        BufferedReader br = new BufferedReader(new FileReader(url));
+        movies = new ArrayList<>();
         try {
-            movies = new ArrayList<>();
-            BufferedReader br = new BufferedReader(new FileReader(url));
             String line;
             String[] fields;
+            br.readLine();
             while ((line = br.readLine()) != null) {
-                fields = line.split(",");
+                fields = line.replaceAll("NA", "?").replaceAll("\"\"", "\"?\"").split("\",\"");
+                fields[0] = fields[0].replaceAll("\"", "");
+                fields[fields.length - 1] = fields[fields.length - 1].replaceAll("\"", "");
                 movies.add(new Movie(fields));
             }
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     /**

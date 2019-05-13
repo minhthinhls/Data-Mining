@@ -12,39 +12,60 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
+import interfaces.FileHandler;
 
 /**
  *
  * @author Minh Thinh
  */
-public class Tags {
+public class Tags implements FileHandler {
 
     private List<Tag> tags;
 
-    public List<Tag> getTags() {
+    /**
+     *
+     * @return
+     */
+    @Override
+    public List<Tag> getList() {
         return tags;
     }
 
     /**
      *
+     * @param toUrl
+     * @throws IOException
+     */
+    @Override
+    public void toArff(String toUrl) throws IOException {
+
+    }
+
+    /**
+     *
      * @param url
+     * @return
      * @throws FileNotFoundException
      */
-    public void read(String url) throws FileNotFoundException {
+    @Override
+    public Tags read(String url) throws FileNotFoundException {
         // Reading the file from parameter @url.
+        BufferedReader br = new BufferedReader(new FileReader(url));
+        tags = new ArrayList<>();
         try {
-            tags = new ArrayList<>();
-            BufferedReader br = new BufferedReader(new FileReader(url));
             String line;
             String[] fields;
+            br.readLine();
             while ((line = br.readLine()) != null) {
-                fields = line.split(",");
+                fields = line.replaceAll("\"", "").split(",");
                 tags.add(new Tag(fields));
             }
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     /**

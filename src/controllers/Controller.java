@@ -5,15 +5,20 @@
  */
 package controllers;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import models.*;
-import weka.core.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
+import interfaces.FileHandler;
+import models.*;
+import weka.core.Attribute;
+import weka.core.Instances;
 
 /**
  *
@@ -21,57 +26,52 @@ import weka.core.converters.CSVLoader;
  */
 public class Controller {
 
-    static void toArff() throws IOException {
-        // Declare two numeric attributes
-        Attribute Attribute1 = new Attribute("firstNumeric");
-        Attribute Attribute2 = new Attribute("secondNumeric");
-
-        // Declare a nominal attribute along with its values
-        FastVector fvNominalVal = new FastVector(3);
-        fvNominalVal.addElement("blue");
-        fvNominalVal.addElement("gray");
-        fvNominalVal.addElement("black");
-        Attribute Attribute3 = new Attribute("aNominal", fvNominalVal);
-
-        // Declare the class attribute along with its values
-        FastVector fvClassVal = new FastVector(2);
-        fvClassVal.addElement("positive");
-        fvClassVal.addElement("negative");
-        Attribute ClassAttribute = new Attribute("theClass", fvClassVal);
-
-        // Declare the feature vector
-        FastVector fvWekaAttributes = new FastVector(4);
-        fvWekaAttributes.addElement(Attribute1);
-        fvWekaAttributes.addElement(Attribute2);
-        fvWekaAttributes.addElement(Attribute3);
-        fvWekaAttributes.addElement(ClassAttribute);
-
-        // Create an empty training set
-        Instances isTrainingSet = new Instances("Rel", fvWekaAttributes, 10);
-
-        // Set class index
-        isTrainingSet.setClassIndex(3);
-
-        // Create the instance
-        Instance iExample = new Instance(4);
-        iExample.setValue((Attribute) fvWekaAttributes.elementAt(0), 1.0);
-        iExample.setValue((Attribute) fvWekaAttributes.elementAt(1), 0.5);
-        iExample.setValue((Attribute) fvWekaAttributes.elementAt(2), "gray");
-        iExample.setValue((Attribute) fvWekaAttributes.elementAt(3), "positive");
-
-        BufferedWriter bw = new BufferedWriter(new FileWriter("D:/Work/test.arff"));
-        bw.write(isTrainingSet.toString());
-        bw.write(iExample.toString());
-        bw.flush();
-        bw.close();
+    public void toArff(String toUrl) {
+        Field[] fields = Recommendation.class.getDeclaredFields();
+        List<String> listField = Stream.of(fields).map(x -> x.getName()).collect(Collectors.toList());
+        listField.stream().forEach((i) -> {
+            System.out.println(i);
+        });
     }
 
+    static <T extends FileHandler> void toArff(T object, String toUrl) {
+        Field objectField = object.getClass().getDeclaredFields()[0];
+        ParameterizedType genericType = (ParameterizedType) objectField.getGenericType();
+        Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0]; // List<genericClass> objectField;
+
+        Field[] fields = genericClass.getDeclaredFields();
+        List<String> listField = Stream.of(fields).map(x -> x.getName()).collect(Collectors.toList());
+        listField.stream().forEach((i) -> {
+            System.out.println(i);
+        });
+        List list = object.getList();
+        List<Attribute> listAtt = listField.stream().map(x -> new Attribute(x)).collect(Collectors.toList());
+
+    }
+
+    /**
+     * Using Weka framework.
+     *
+     * @param fromUrl
+     * @param toUrl
+     * @throws IOException
+     */
     static void CsvToArff(String fromUrl, String toUrl) throws IOException {
         try {
             CSVLoader loader = new CSVLoader();
             loader.setSource(new File(fromUrl));
+            loader.setMissingValue("NA");
+            System.out.println(loader.getMissingValue());
             Instances data = loader.getDataSet();
+            /*
+            for (int i = 0; i < 10; i++) {
+                System.out.println(data.attribute(i));
+            }
 
+            for (int i = 0; i < 10; i++) {
+                System.out.println(i + ": " + data.instance(i));
+            }
+             */
             ArffSaver as = new ArffSaver();
             as.setInstances(data);
             as.setFile(new File(toUrl));
@@ -87,22 +87,30 @@ public class Controller {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
-        Answers answers = new Answers();
-        answers.read("dataset/answers.csv");
 
+//        Answers answers = new Answers();
+//        answers.read("dataset/answers.csv");
+//        System.out.println(answers.getList().get(1).getUserId());
+//        System.out.println(answers.getList().get(1).getM_ser_rec());
+//
         Movies movies = new Movies();
         movies.read("dataset/movies.csv");
+        System.out.println(movies.getList().get(1).getMovieId());
+        System.out.println(movies.getList().get(1).getGenres());
 
         Recommendations recommendations = new Recommendations();
-        recommendations.read("dataset/recommendations.csv");
+        recommendations.read("dataset/recommendations.csv").toArff("dataset/recommendations.arff");
 
-        Tags tags = new Tags();
-        tags.read("dataset/tags.csv");
-
-        CsvToArff("dataset/answers.csv", "D:/Work/answers.arff");
-        CsvToArff("dataset/movies.csv", "D:/Work/movies.arff");
-        CsvToArff("dataset/recommendations.csv", "D:/Work/recommendations.arff");
-        CsvToArff("dataset/tags.csv", "D:/Work/tags.arff");
+//        Tags tags = new Tags();
+//        tags.read("dataset/tags.csv");
+//        System.out.println(tags.getList().get(1).getUserId());
+//        System.out.println(tags.getList().get(1).getTimestamp());
+        //CsvToArff("dataset/answers.csv", "dataset/answers.arff");
+        //CsvToArff("dataset/movies.csv", "dataset/movies.arff");
+        //CsvToArff("dataset/recommendations.csv", "dataset/recommendations.arff");
+        //CsvToArff("dataset/tags.csv", "dataset/tags.arff");
+        //toArff();
+        //toArff(new Recommendations(), "");
     }
 
 }
