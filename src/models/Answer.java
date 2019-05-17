@@ -5,12 +5,20 @@
  */
 package models;
 
+import interfaces.Model;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  *
  * @author Minh Thinh
  */
-public class Answer {
+public class Answer implements Model {
 
+    private List<String> allFieldsValue;
     private String userId;
     private String movieId;
     private String rating;
@@ -34,10 +42,12 @@ public class Answer {
     private String m_ser_imp;
     private String m_ser_rec;
 
+    @Deprecated
     public Answer() {
         // Constructor
     }
 
+    @Deprecated
     public Answer(String userId, String movieId, String rating, String timestamp, String predictedRating, String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8, String q, String s_ser_rel, String s_ser_find, String s_ser_imp, String s_ser_rec, String m_ser_rel, String m_ser_find, String m_ser_imp, String m_ser_rec) {
         this.userId = userId;
         this.movieId = movieId;
@@ -64,6 +74,7 @@ public class Answer {
     }
 
     public Answer(String[] fields) {
+        this.allFieldsValue = Arrays.asList(fields);
         this.userId = fields[0];
         this.movieId = fields[1];
         this.rating = fields[2];
@@ -86,6 +97,24 @@ public class Answer {
         this.m_ser_find = fields[19];
         this.m_ser_imp = fields[20];
         this.m_ser_rec = fields[21];
+    }
+
+    /**
+     * Get the name of all String fields into String[].
+     *
+     * @return List<>
+     */
+    public static List getFieldsName() {
+        Field[] fields = Answer.class.getDeclaredFields();
+        List<String> allFieldsName = Stream.of(fields).filter(field -> {
+            return field.getType().equals(String.class);
+        }).map(field -> field.getName()).collect(Collectors.toList());
+        return allFieldsName;
+    }
+
+    @Override
+    public List getFieldsValue() {
+        return allFieldsValue;
     }
 
     public String getUserId() {

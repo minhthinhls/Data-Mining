@@ -5,12 +5,20 @@
  */
 package models;
 
+import interfaces.Model;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  *
  * @author Minh Thinh
  */
-public class Movie {
+public class Movie implements Model {
 
+    private List<String> allFieldsValue;
     private String movieId;
     private String title;
     private String releaseDate;
@@ -20,10 +28,12 @@ public class Movie {
     private String tmdbId;
     private String genres;
 
+    @Deprecated
     public Movie() {
         // Constructor
     }
 
+    @Deprecated
     public Movie(String movieId, String title, String releaseDate, String directedBy, String starring, String imdbId, String tmdbId, String genres) {
         this.movieId = movieId;
         this.title = title;
@@ -36,6 +46,7 @@ public class Movie {
     }
 
     public Movie(String[] fields) {
+        this.allFieldsValue = Arrays.asList(fields);
         this.movieId = fields[0];
         this.title = fields[1];
         this.releaseDate = fields[2];
@@ -44,6 +55,24 @@ public class Movie {
         this.imdbId = fields[5];
         this.tmdbId = fields[6];
         this.genres = fields[7];
+    }
+
+    /**
+     * Get the name of all String fields into String[].
+     *
+     * @return List<>
+     */
+    public static List getFieldsName() {
+        Field[] fields = Movie.class.getDeclaredFields();
+        List<String> allFieldsName = Stream.of(fields).filter(field -> {
+            return field.getType().equals(String.class);
+        }).map(field -> field.getName()).collect(Collectors.toList());
+        return allFieldsName;
+    }
+
+    @Override
+    public List getFieldsValue() {
+        return allFieldsValue;
     }
 
     public String getMovieId() {

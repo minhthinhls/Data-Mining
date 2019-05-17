@@ -50,15 +50,15 @@ public class Recommendations implements FileHandler {
             Attribute userId = new Attribute("userId");
             Attribute movieId = new Attribute("movieId");
 
-            List<Attribute> listATT = new ArrayList<>(Arrays.asList(userId, movieId));
+            List<Attribute> attributes = new ArrayList<>(Arrays.asList(userId, movieId));
 
             // Create an empty training set
-            Instances dataSet = new Instances("recommendations", (ArrayList<Attribute>) listATT, 0);
-            Instance ins = new DenseInstance(2);
+            Instances dataSet = new Instances("recommendations", (ArrayList<Attribute>) attributes, 0);
+            Instance newInstance = new DenseInstance(2);
             for (Recommendation recommendation : recommendations) {
-                ins.setValue(userId, Double.valueOf(recommendation.getUserId()));
-                ins.setValue(movieId, Double.valueOf(recommendation.getMovieId()));
-                dataSet.add(ins);
+                newInstance.setValue(userId, Double.valueOf(recommendation.getUserId()));
+                newInstance.setValue(movieId, Double.valueOf(recommendation.getMovieId()));
+                dataSet.add(newInstance);
             }
             bw.write(dataSet.toString());
             bw.flush();
@@ -71,19 +71,19 @@ public class Recommendations implements FileHandler {
 
     /**
      *
-     * @param url
+     * @param fromUrl
      * @return
      * @throws FileNotFoundException
      */
     @Override
-    public Recommendations read(String url) throws FileNotFoundException {
-        // Reading the file from parameter @url.
-        BufferedReader br = new BufferedReader(new FileReader(url));
+    public Recommendations read(String fromUrl) throws FileNotFoundException {
+        // Reading the file from parameter @fromUrl.
+        BufferedReader br = new BufferedReader(new FileReader(fromUrl));
         recommendations = new ArrayList<>();
         try {
             String line;
             String[] fields;
-            br.readLine();
+            br.readLine(); // Skips the first line in csv file.
             while ((line = br.readLine()) != null) {
                 fields = line.replaceAll(" ", "").split(",");
                 recommendations.add(new Recommendation(fields));

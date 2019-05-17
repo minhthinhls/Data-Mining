@@ -19,6 +19,8 @@ import interfaces.FileHandler;
 import models.*;
 import weka.core.Attribute;
 import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
 /**
  *
@@ -26,8 +28,8 @@ import weka.core.Instances;
  */
 public class Controller {
 
-    public void toArff(String toUrl) {
-        Field[] fields = Recommendation.class.getDeclaredFields();
+    public static void toArff(String toUrl) {
+        Field[] fields = Answer.class.getDeclaredFields();
         List<String> listField = Stream.of(fields).map(x -> x.getName()).collect(Collectors.toList());
         listField.stream().forEach((i) -> {
             System.out.println(i);
@@ -57,27 +59,24 @@ public class Controller {
      * @throws IOException
      */
     static void CsvToArff(String fromUrl, String toUrl) throws IOException {
+        Filter valueFilter = new ReplaceMissingValues();
+        CSVLoader loader = new CSVLoader();
+        loader.setSource(new File(fromUrl)); // May throw IOException !
         try {
-            CSVLoader loader = new CSVLoader();
-            loader.setSource(new File(fromUrl));
             loader.setMissingValue("NA");
-            System.out.println(loader.getMissingValue());
             Instances data = loader.getDataSet();
-            /*
-            for (int i = 0; i < 10; i++) {
-                System.out.println(data.attribute(i));
-            }
-
-            for (int i = 0; i < 10; i++) {
-                System.out.println(i + ": " + data.instance(i));
-            }
-             */
+            valueFilter.setInputFormat(data);
+            data = Filter.useFilter(data, valueFilter);
             ArffSaver as = new ArffSaver();
             as.setInstances(data);
             as.setFile(new File(toUrl));
             as.writeBatch();
+            System.out.println(String.format("=> Success reading from %s and writing to %s", fromUrl, toUrl));
         } catch (Exception e) {
+            System.out.println(String.format("=> Failed reading from %s and writing to %s", fromUrl, toUrl));
             e.printStackTrace();
+        } finally {
+            // Do nothing !
         }
     }
 
@@ -88,29 +87,18 @@ public class Controller {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
 
-//        Answers answers = new Answers();
-//        answers.read("dataset/answers.csv");
-//        System.out.println(answers.getList().get(1).getUserId());
-//        System.out.println(answers.getList().get(1).getM_ser_rec());
-//
-        Movies movies = new Movies();
-        movies.read("dataset/movies.csv");
-        System.out.println(movies.getList().get(1).getMovieId());
-        System.out.println(movies.getList().get(1).getGenres());
-
-        Recommendations recommendations = new Recommendations();
-        recommendations.read("dataset/recommendations.csv").toArff("dataset/recommendations.arff");
-
-//        Tags tags = new Tags();
-//        tags.read("dataset/tags.csv");
-//        System.out.println(tags.getList().get(1).getUserId());
-//        System.out.println(tags.getList().get(1).getTimestamp());
+        //Answers answers = new Answers();
+        //answers.read("dataset/answers.csv").toArff("dataset/answers.arff");
+        //Movies movies = new Movies();
+        //movies.read("dataset/movies.csv").toArffs("dataset/movies.arff");
+        //Recommendations recommendations = new Recommendations();
+        //recommendations.read("dataset/recommendations.csv").toArff("dataset/recommendations.arff");
+        //Tags tags = new Tags();
+        //tags.read("dataset/tags.csv").toArffs("dataset/tags.arff");
         //CsvToArff("dataset/answers.csv", "dataset/answers.arff");
         //CsvToArff("dataset/movies.csv", "dataset/movies.arff");
         //CsvToArff("dataset/recommendations.csv", "dataset/recommendations.arff");
         //CsvToArff("dataset/tags.csv", "dataset/tags.arff");
-        //toArff();
-        //toArff(new Recommendations(), "");
     }
 
 }
