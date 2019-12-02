@@ -28,7 +28,12 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
  */
 public class Controller {
 
-    public static void toArff(String toUrl) {
+    /**
+     * Testing: This method is not used !
+     *
+     * @param toUrl
+     */
+    static void toArff(String toUrl) {
         Field[] fields = Answer.class.getDeclaredFields();
         List<String> listField = Stream.of(fields).map(x -> x.getName()).collect(Collectors.toList());
         listField.stream().forEach((i) -> {
@@ -36,6 +41,13 @@ public class Controller {
         });
     }
 
+    /**
+     * Testing: This method is not used !
+     *
+     * @param <T>
+     * @param object
+     * @param toUrl
+     */
     static <T extends FileHandler> void toArff(T object, String toUrl) {
         Field objectField = object.getClass().getDeclaredFields()[0];
         ParameterizedType genericType = (ParameterizedType) objectField.getGenericType();
@@ -48,7 +60,6 @@ public class Controller {
         });
         List list = object.getList();
         List<Attribute> listAtt = listField.stream().map(x -> new Attribute(x)).collect(Collectors.toList());
-
     }
 
     /**
@@ -85,20 +96,20 @@ public class Controller {
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        // TODO code application logic here
-
-        //Answers answers = new Answers();
-        //answers.read("dataset/answers.csv").toArff("dataset/answers.arff");
-        //Movies movies = new Movies();
-        //movies.read("dataset/movies.csv").toArffs("dataset/movies.arff");
-        //Recommendations recommendations = new Recommendations();
-        //recommendations.read("dataset/recommendations.csv").toArff("dataset/recommendations.arff");
-        //Tags tags = new Tags();
-        //tags.read("dataset/tags.csv").toArffs("dataset/tags.arff");
-        //CsvToArff("dataset/answers.csv", "dataset/answers.arff");
-        //CsvToArff("dataset/movies.csv", "dataset/movies.arff");
-        //CsvToArff("dataset/recommendations.csv", "dataset/recommendations.arff");
-        //CsvToArff("dataset/tags.csv", "dataset/tags.arff");
+        /**
+         * Applying method 1, using created objects to handle !
+         */
+        new Answers().read("dataset/answers.csv").toArff("dataset/answers.arff");
+        new Movies().read("dataset/movies.csv").toArffs("dataset/movies.arff");
+        new Recommendations().read("dataset/recommendations.csv").toArff("dataset/recommendations.arff");
+        new Tags().read("dataset/tags.csv").toArffs("dataset/tags.arff");
+        /**
+         * Applying method 2, using WEKA framework to handle !
+         */
+        CsvToArff("dataset/answers.csv", "dataset/answers.arff");
+        CsvToArff("dataset/movies.csv", "dataset/movies.arff");
+        CsvToArff("dataset/recommendations.csv", "dataset/recommendations.arff");
+        CsvToArff("dataset/tags.csv", "dataset/tags.arff");
     }
 
 }

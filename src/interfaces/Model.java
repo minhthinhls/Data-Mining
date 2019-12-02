@@ -10,9 +10,8 @@ import java.util.List;
 /**
  *
  * @author Minh Thinh
- * @param <T>
  */
-public interface Model<T extends Model> {
+public interface Model {
 
     public static List getFieldsName() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
